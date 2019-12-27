@@ -1,0 +1,9 @@
+{
+    "name": "wunner",
+    "profile": "default",
+    "regions": ["us-east-1"],
+    "lambda": {
+        "role": "arn:aws:iam::519435868093:role/WunnerRole",
+        "memory": 128
+    }
+  }
