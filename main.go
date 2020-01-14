@@ -4,9 +4,12 @@ import (
 	"Wunner/wunner"
 	"encoding/json"
 	"net/http"
+	"os"
 	"strconv"
+	"time"
 
 	"github.com/gin-gonic/gin"
+	cors "github.com/itsjamie/gin-cors"
 
 	"github.com/apex/log"
 )
@@ -21,15 +24,33 @@ func main() {
 		user.GET("/setlayout", setLayout())
 	}
 
+	router.Use(cors.Middleware(cors.Config{
+		Origins:         "*",
+		Methods:         "GET, PUT, POST, DELETE",
+		RequestHeaders:  "Origin, Authorization, Content-Type",
+		ExposedHeaders:  "",
+		MaxAge:          50 * time.Second,
+		Credentials:     true,
+		ValidateHeaders: false,
+	}))
+
+	time := router.Group("/time")
+	{
+		time.GET("/countdown", getCountDownTime())
+	}
+
 	team := router.Group("/team")
 	{
 		team.GET("/get", getTeam())
+		team.POST("/add", addTeam())
+		team.GET("/start", startMission())
 		team.GET("/submit", submit())
 	}
 
 	event := router.Group("/event")
 	{
 		event.GET("/get", getEvent())
+		event.GET("/getall", getAllEvent())
 		event.POST("/add", addEvent())
 		event.POST("/attend", attendEvent())
 	}
@@ -38,9 +59,10 @@ func main() {
 	{
 		station.GET("/get", getStation())
 		station.POST("/mark", markStation())
+		station.GET("/getwithusername", getStationWithUserName())
 	}
 
-	addr := ":" + "8080" //os.Getenv("PORT")
+	addr := ":" + os.Getenv("PORT")
 	router.Run(addr)
 }
 
@@ -55,7 +77,11 @@ func login() gin.HandlerFunc {
 			return
 		}
 
-		userCheck, ok := wunner.CheckLogin(user)
+		userCheck, ok := wunner.GetUserInfo(user.UserName)
+		if user.UserPassword != userCheck.UserPassword {
+			ok = false
+		}
+
 		if ok {
 			c.JSON(http.StatusOK, userCheck)
 		} else {
@@ -127,14 +153,91 @@ func addTeam() gin.HandlerFunc {
 	}
 }
 
+func startMission() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		teamID := c.Query("teamID")
+		stationID := c.Query("stationID")
+		timeStart := wunner.GetCurrentTimestamp(7)
+
+		team, _ := wunner.GetTeamInfo(teamID)
+		_, ok := wunner.GetStationInfo(stationID)
+		if !ok {
+			c.String(http.StatusNotFound, "Not found stationID")
+		}
+
+		team.TeamPoint = append(team.TeamPoint, wunner.Point{
+			StationID: stationID,
+			TimeStart: timeStart,
+		})
+
+		var fields = make(map[string]interface{})
+		fields["teamPoint"] = team.TeamPoint
+		wunner.UpdateTeamInfo(teamID, fields)
+	}
+}
+
 func submit() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		teamID := c.Query("teamID")
-		timeEnd := c.Query("timeEnd")
-		var fields = make(map[string]interface{})
-		fields["timeEnd"] = timeEnd
-		wunner.UpdateTeam(teamID, fields)
+		stationID := c.Query("stationID")
+		timeEnd := wunner.GetCurrentTimestamp(7)
+		team, _ := wunner.GetTeamInfo(teamID)
+		for i := range team.TeamPoint {
+			if team.TeamPoint[i].StationID == stationID {
+				team.TeamPoint[i].TimeEnd = timeEnd
+				var fields = make(map[string]interface{})
+				fields["teamPoint"] = team.TeamPoint
+				wunner.UpdateTeamInfo(teamID, fields)
+				break
+			}
+		}
 		c.JSON(http.StatusOK, "Submited")
+	}
+}
+
+func markStation() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		teamID := c.Query("teamID")
+		stationID := c.Query("stationID")
+		point := c.Query("point")
+		pointInt, _ := strconv.Atoi(point)
+
+		team, ok := wunner.GetTeamInfo(teamID)
+		if ok {
+			for i := range team.TeamPoint {
+				if team.TeamPoint[i].StationID == stationID {
+					team.TeamPoint[i].Point = pointInt
+					var fields = make(map[string]interface{})
+					fields["teamPoint"] = team.TeamPoint
+					wunner.UpdateTeamInfo(teamID, fields)
+				}
+			}
+			c.String(http.StatusOK, "Got your request")
+		}
+	}
+}
+
+/*************************************** Time ***********************************************/
+func getCountDownTime() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		teamID := c.Query("teamID")
+		stationID := c.Query("stationID")
+
+		team, _ := wunner.GetTeamInfo(teamID)
+		station, _ := wunner.GetStationInfo(stationID)
+		var countDownTime int64
+		countDownTime = 0
+		var find = false
+		for i := range team.TeamPoint {
+			if team.TeamPoint[i].StationID == stationID {
+				countDownTime = station.StationTime - (wunner.GetCurrentTimestamp(7) - team.TeamPoint[i].TimeStart)
+			}
+		}
+		if find {
+			c.JSON(http.StatusOK, countDownTime)
+		} else {
+			c.String(http.StatusNotFound, "Not receive misstion")
+		}
 	}
 }
 
@@ -197,7 +300,7 @@ func getStation() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		stationID := c.Query("stationID")
 
-		station, ok := wunner.GetStation(stationID)
+		station, ok := wunner.GetStationInfo(stationID)
 		if ok {
 			c.JSON(http.StatusOK, station)
 		} else {
@@ -206,41 +309,20 @@ func getStation() gin.HandlerFunc {
 	}
 }
 
-func startStation() gin.HandlerFunc {
+func getStationWithUserName() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		stationID := c.Query("stationID")
-		//teamID := c.Query("teamID")
-
-		station, ok := wunner.GetStation(stationID)
+		userName := c.Query("userName")
+		user, ok := wunner.GetUserInfo(userName)
 		if ok {
-			c.JSON(http.StatusOK, station)
+			var stations = []string{}
+			for i := range user.TeamID {
+				team, _ := wunner.GetTeamInfo(user.TeamID[i])
+				event, _ := wunner.GetEventInfo(team.EventID)
+				stations = event.StationID
+			}
+			c.JSON(http.StatusOK, stations)
 		} else {
-			c.String(http.StatusNotFound, "Not found stationID")
+			c.String(http.StatusNotFound, "Not found userName")
 		}
-	}
-}
-
-func finishStation() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		stationID := c.Query("stationID")
-		//teamID := c.Query("teamID")
-
-		station, ok := wunner.FinishStation(stationID)
-		if ok {
-			c.JSON(http.StatusOK, station)
-		} else {
-			c.String(http.StatusNotFound, "Not found stationID")
-		}
-	}
-}
-
-func markStation() gin.HandlerFunc {
-	return func(c *gin.Context) {
-		teamID := c.Query("teamID")
-		stationID := c.Query("stationID")
-		point := c.Query("point")
-		pointInt, _ := strconv.Atoi(point)
-		wunner.MarkStation(teamID, stationID, pointInt)
-		c.String(http.StatusOK, "Got your request")
 	}
 }

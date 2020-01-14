@@ -19,7 +19,7 @@ type (
 		UserAddress  string   `dynamo:"userAddress"`
 		UserType     string   `dynamo:"userType"`
 		TeamID       []string `dynamo:"teamID"`
-		LayoutType   int      `dynamo:"layoutType"`
+		LayoutType   string   `dynamo:"layoutType"`
 		StationID    string   `dynamo:"stationID"`
 	}
 
@@ -43,6 +43,7 @@ type (
 		EventPlace       string   `dynamo:"eventPlace"`
 		EventDate        string   `dynamo:"eventDate"`
 		EventDescription string   `dynamo:"eventDescription"`
+		EventPicture     string   `dynamo:"eventPicture"`
 		StationID        []string `dynamo:"stationID"`
 	}
 
@@ -51,6 +52,7 @@ type (
 		StationName        string `dynamo:"stationName"`
 		StationPoint       int    `dynamo:"stationPoint"`
 		StationTime        int64  `dynamo:"stationTime"`
+		StationRun         int64  `dynamo:"stationRun"`
 		StationDate        string `dynamo:"stationDate"`
 		StationDescription string `dynamo:"stationDescription"`
 		StationIndex       int    `dynamo:"stationIndex"`
@@ -87,7 +89,7 @@ func AddNewUser(user *User) bool {
 	return true
 }
 
-func getUserInfo(userName string) (*User, bool) {
+func GetUserInfo(userName string) (*User, bool) {
 	ok := true
 	var user User
 	err := database.GetObject(AWSRegion, UserTable, "userName", userName, &user)
@@ -150,11 +152,11 @@ func GetTeamInfo(teamID string) (*Team, bool) {
 	return &team, ok
 }
 
-func UpdateTeam(teamID string, fields map[string]interface{}) bool {
+func UpdateTeamInfo(teamID string, fields map[string]interface{}) bool {
 	ok := true
 	err := database.UpdateObject(AWSRegion, TeamTable, "teamID", teamID, fields)
 	if err != nil {
-		log.Error("updateTeam: " + err.Error())
+		log.Error("updateTeamInfo: " + err.Error())
 		ok = false
 	}
 	return ok
@@ -188,7 +190,7 @@ func addNewStation(station *Station) bool {
 	return true
 }
 
-func getStationInfo(stationID string) (*Station, bool) {
+func GetStationInfo(stationID string) (*Station, bool) {
 	ok := true
 	var station Station
 	err := database.GetObject(AWSRegion, StationTable, "stationID", stationID, &station)
@@ -274,7 +276,7 @@ func updateEventInfo(eventID string, fields map[string]interface{}) bool {
 }
 
 /*************************************** Misc ***********************************************/
-func getCurrentTimestamp(timezone int64) int64 {
+func GetCurrentTimestamp(timezone int64) int64 {
 	return time.Now().Unix() + timezone*60*60
 }
 
