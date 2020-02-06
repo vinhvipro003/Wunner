@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="200dp"
+
+    android:background="@drawable/background_navigation">
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:layout_width="80dp"
+        android:layout_height="80dp"
+        android:id="@+id/img_navigator"
+        android:layout_alignParentTop="true"
+        android:layout_margin="20dp"
+        android:layout_weight="0.2"
+        android:src="@drawable/info">
+    </de.hdodenhof.circleimageview.CircleImageView>
+    <TextView
+        android:id="@+id/txt_NameNavi"
+        android:layout_width="match_parent"
+        android:fontFamily="@font/josefinsans_regular"
+        android:layout_height="40dp"
+        android:layout_below="@id/img_navigator"
+        android:textColor="#ffffff"
+        android:layout_marginLeft="20dp"
+        android:text="RUNNER"
+        android:textSize="24sp">
+    </TextView>
+
+</RelativeLayout>

@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "135661144189",
+    "firebase_url": "https://wunner-50f2f.firebaseio.com",
+    "project_id": "wunner-50f2f",
+    "storage_bucket": "wunner-50f2f.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:135661144189:android:2a33b878a6e43c88460914",
+        "android_client_info": {
+          "package_name": "com.production.wunner"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "135661144189-t9aa2o4m3mlie6fifr29emat6dm9c5bu.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAll8SNS8orREscWUaPT2m84gsVoErOYfE"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "135661144189-t9aa2o4m3mlie6fifr29emat6dm9c5bu.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

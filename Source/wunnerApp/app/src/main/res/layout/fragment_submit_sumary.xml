@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="400dp"
+    android:layout_marginRight="10dp"
+    android:layout_marginLeft="10dp">
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:text="Team ID"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/josefinsans_bold"
+        android:textColor="#070707"/>
+    <TextView
+        android:textSize="30sp"
+        android:textColor="#020202"
+        android:textAlignment="center"
+        android:id="@+id/txt_teamID"
+        android:background="@drawable/bg_text_submit"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Staion ID"
+        android:layout_marginTop="5dp"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/josefinsans_bold"
+        android:textColor="#070707"/>
+    <TextView
+        android:textAlignment="center"
+        android:textColor="#020202"
+        android:id="@+id/txt_stationID"
+        android:textSize="30sp"
+        android:background="@drawable/bg_text_submit"
+        android:layout_width="match_parent"
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"/>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Time Submit"
+        android:gravity="center"
+        android:layout_marginTop="20dp"
+        android:textSize="40sp"
+        android:textStyle="bold"
+        android:fontFamily="@font/josefinsans_bold"
+        android:textColor="#070707"/>
+    <EditText
+        android:paddingLeft="10dp"
+        android:textColor="#020202"
+        android:textSize="30sp"
+        android:textAlignment="center"
+        android:id="@+id/txt_timeSubmit"
+        android:background="@drawable/bg_text_submit"
+        android:layout_width="match_parent"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginTop="10dp"
+        android:layout_height="50dp"/>
+
+
+
+</LinearLayout>

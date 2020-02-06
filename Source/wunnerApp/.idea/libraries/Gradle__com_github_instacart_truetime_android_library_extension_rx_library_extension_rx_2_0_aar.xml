@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="Gradle: com.github.instacart.truetime-android.library-extension-rx:library-extension-rx:2.0@aar">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ef4fe64bfe821b5f76f8f35d629d05da/library-extension-rx-2.0/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ef4fe64bfe821b5f76f8f35d629d05da/library-extension-rx-2.0/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

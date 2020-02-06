@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:weightSum="10"
+    tools:context=".Activity.show_misson"
+    android:orientation="vertical">
+
+    <FrameLayout
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.2"
+        android:paddingLeft="16dp"
+        android:paddingRight="16dp"
+
+        android:background="@color/colorPrimary">
+        <View
+            android:layout_marginTop="12dp"
+            android:id="@+id/indicator"
+            android:layout_width="0dp"
+            android:layout_height="20dp"
+            android:background="@drawable/bg_tablayout_fragment"/>
+        <com.google.android.material.tabs.TabLayout
+            android:layout_marginTop="12dp"
+            android:layout_gravity="center_vertical"
+            android:id="@+id/tabLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="36dp"
+            android:background="@drawable/tab_layout_background"
+            app:tabMode="scrollable"
+            app:tabBackground="@drawable/tab_layout_selector"
+            app:tabSelectedTextColor="@color/colorPrimaryDark"
+            app:tabPaddingStart="16dp"
+            app:tabPaddingEnd="16dp"
+            app:tabIndicatorHeight="0dp"
+            app:tabRippleColor="@null"
+            app:tabTextAppearance="@style/TabTextAppearance"/>
+
+    </FrameLayout>
+    <androidx.viewpager.widget.ViewPager
+        android:layout_width="match_parent"
+        android:id="@+id/viewPager"
+        android:layout_height="0dp"
+        android:layout_weight="8.5">
+
+    </androidx.viewpager.widget.ViewPager>
+</LinearLayout>
